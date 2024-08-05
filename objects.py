@@ -41,6 +41,16 @@ class Farer(Person):
         super().__init__(name, pay)
         self.amount = quantity
         self.charge = self.pay - self.amount * price
+    
+    @property
+    def amount(self):
+        return self._amount
+    
+    @amount.setter
+    def quantity(self, quantity):
+        if quantity == None:
+            quantity = 1
+        self._amount = quantity
 
 
 class Menue(Person):
