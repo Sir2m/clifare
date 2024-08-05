@@ -40,7 +40,18 @@ class Farer(Person):
     def __init__(self, name:str, pay:int, price:int, quantity:int|None):
         super().__init__(name, pay)
         self.amount = quantity
-        self.charge = self.pay - self.amount * price
+        self.charge = price
+    
+    @property
+    def charge(self):
+        return self._charge
+    
+    @charge.setter
+    def charge(self, price):
+        x = self.pay - self.amount * price
+        if x < 0:
+            raise ValueError("You are will be in Debt")
+        self._charge = x
     
     @property
     def amount(self):
