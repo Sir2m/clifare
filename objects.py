@@ -37,14 +37,29 @@ class Person(Wallet):
 
 
 class Farer(Person):
-    def __init__(self, name:str, pay:int, price:int, quantity:int):
+    def __init__(self, name:str, pay:int, price:int, quantity:int|None):
         super().__init__(name, pay)
         self.amount = quantity
         self.charge = self.pay - self.amount * price
 
 
 class Menue(Person):
-    def __init__(self, name: str, pay: int):
-        super().__init__(name, pay)
+    def __init__(self, name: str):
+        super().__init__(name, 0)
+        self.order = {}
 
+    menu = {}
+
+    @classmethod
+    def add_item(cls, item:str, price:int):
+        cls.menu[item] = price
+
+    def add_order(self, item, quantity):
+        if item not in Menue.menu:
+            price = int(input(f"price of {item}?"))
+            Menue.add_item(item, price)
+        if item in self.order:
+            self.order[item] += quantity
+        else:
+            self.order[item] = quantity
 unkx = 1
