@@ -34,6 +34,8 @@ class Wallet:
     def __add__(self, other):
         try:
             return Wallet(self.pay + other.pay)
+        except KeyboardInterrupt:
+            quit()
         except:
             raise Exception("Code Error")
 
@@ -56,7 +58,7 @@ class Person(Wallet):
         self.name = name
 
 
-    # the variable to set the unknow "x" name with
+    # the variable to set the unknown "x" name with
     UNKX = 1
 
     @property
@@ -162,6 +164,8 @@ class Menue(Person):
                 cls.MENU[item] = price
             else:
                 raise ValueError
+        except KeyboardInterrupt:
+            quit()
         except:
             print('You guys pay this?\nagain')
             cls.add_item(item)
@@ -186,5 +190,7 @@ def inter(inp):
     """
     try:
         return int(inp)
+    except KeyboardInterrupt:
+        quit()
     except:
         return inp

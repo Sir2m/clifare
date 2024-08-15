@@ -146,3 +146,19 @@ def testing_add_order(monkeypatch):
 
     assert Menue.MENU['Fish'] == 38
     assert z.order['Fish'] == 10
+
+
+def test_get_price(monkeypatch):
+    """
+    testing the get_price function
+    """
+    inputs = iter(['m', None, '', -10, 5])
+    monkeypatch.setattr('builtins.input', lambda _: next(inputs))
+
+    # main test
+    # fare mode test
+    x = file.get_int_input(" ",
+                          True,
+                          lambda x: x > 0,
+                          " ")
+    assert x == 5
