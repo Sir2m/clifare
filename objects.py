@@ -81,7 +81,7 @@ class Person(Wallet):
 
 
     @amount.setter
-    def amount(self, quantity: int):
+    def amount(self, quantity: int | None = None):
         if quantity == None:
             self._amount = 1
         elif (type(quantity) != int) or (quantity < 1):
@@ -122,6 +122,7 @@ class Farer(Person):
 
     @change.setter
     def change(self, price):
+        self.price = price
         while (not price) or (type(price) != int) or (price < 0):
             price = inter(input('What a price! was that a sample??\nwhat was the price? '))
         x = self.pay - self.amount * price
@@ -132,6 +133,21 @@ class Farer(Person):
             self.change = inter(input("Finally, what was the price? "))
         else:
             self._change = x
+
+
+    def change_pay(self, pay):
+        self.pay = pay
+        self.change = self.price
+        print("\nPrice changed successfully")
+
+
+    def change_amount(self, amount):
+        self.amount = amount
+        self.change = self.price
+        print("\nAmount changed successfully")
+
+    def __str__(self):
+        return f"Name: {self.name}\nPaid: {self.pay}\nFor: {self.amount}\nChange: {self.change}\nPrice: {self.price}"
 
 
 class Menue(Person):
@@ -180,6 +196,39 @@ class Menue(Person):
             self.order[item] += self.amount
         else:
             self.order[item] = self.amount
+
+
+class Payers:
+    def __init__(self, mode):
+        self.list = []
+        match mode.__qualname__:
+            case Farer.__qualname__:
+                pass
+            case Menue.__qualname__:
+                pass
+
+
+    def add(self, obj):
+        if obj:
+            self.list.append(obj)
+
+
+    def money(self):
+        x = 0
+        for i in self.list:
+            x += i.pay
+        return x
+    
+
+    def change(self):
+        for i in self.list:
+            print(f"{i.name}, paid {i.pay}, change is  {i.change}")
+    
+
+    def show(self):
+        print('people who paid: ')
+        for i in self.list:
+            print(i.name)
 
 
 def inter(inp):
