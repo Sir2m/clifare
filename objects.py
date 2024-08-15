@@ -168,6 +168,7 @@ class Menue(Person):
 
     # the place to store the price of all kinds ordered in the order
     MENU = {}
+    TAX = 0
 
     @classmethod
     def add_item(cls, item:str):
@@ -187,25 +188,96 @@ class Menue(Person):
             cls.add_item(item)
 
 
+    # will be needed for better testings
+    @classmethod
+    def del_menu(cls):
+        cls.MENU = {}
+
+
+    @classmethod
+    def edit_price(cls):
+        cls.print_menu()
+        inp = input("Which item you wanna change? ")
+        inp = inp.title()
+        if pri := cls.MENU.get(inp):
+            print(f"Current price = {pri}")
+            pri = getter('New price: ', True,
+                         lambda x: x > 0,
+                         "\nNew Price is set!\n")
+
+
+    @classmethod
+    def print_menu(cls):
+        print()
+        for k, v in cls.MENU.items():
+            print(f"{k} for {v}")
+        print()
+
+
+    @classmethod
+    def add_tax(cls):
+        inp = getter("Enter price (0.x): ", True,
+                     lambda x: 1 > x > 0,
+                     '\nTax is set successfully!\n')
+
+    
     def add_order(self, item:str, quantity:int):
         item = item.title()
         self.amount = quantity
+        if not item:
+            print("Wrong name!\n")
         if item not in Menue.MENU:
             Menue.add_item(item)
         if item in self.order:
             self.order[item] += self.amount
         else:
             self.order[item] = self.amount
+        self.amount = None
+
+    
+    def to_pay(self):
+        self.get_cost()
+        self.pay = inter(input("Pay: "))
+        if self.pay >= self.cost:
+            print('\nYou Paid Successfully!\n')
+            self.get_change()
+        else:
+            print("\nCheck cost and pay again!\n")
+
+    def get_change(self):
+        self.change = self.pay - self.cost
+        if self.change < 1:
+            raise ValueError
+
+    def get_cost(self):
+        total = 0
+        try:
+            for dish, amount in self.order.items():
+                total += amount * self.MENU[dish]
+        except KeyboardInterrupt:
+            quit()
+        except:
+            print("Something is wrong, delete this object")
+        self.cost = total * (1 + self.TAX)
+
+
+    def __str__(self):
+        name = f"Name: {self.name}\n"
+        order = "Order:\n"
+        for k, v in self.order.items():
+            order += f"       {v} of {k}\n"
+        return name + order
+        
 
 
 class Payers:
-    def __init__(self, mode):
+    def __init__(self):
         self.list = []
-        match mode.__qualname__:
-            case Farer.__qualname__:
-                pass
-            case Menue.__qualname__:
-                pass
+        # match mode.__qualname__:
+        #     case Farer.__qualname__:
+        #         pass
+        #     case Menue.__qualname__:
+        #         pass
 
 
     def add(self, obj):
@@ -214,21 +286,40 @@ class Payers:
 
 
     def money(self):
-        x = 0
+        x = Wallet(0)
         for i in self.list:
-            x += i.pay
-        return x
+            x += i
+        return x.pay
     
 
     def change(self):
         for i in self.list:
+            # the paid amount is written for removing any conflict may be done with nameless objects
             print(f"{i.name}, paid {i.pay}, change is  {i.change}")
     
 
     def show(self):
-        print('people who paid: ')
+        print('people in list: ')
         for i in self.list:
             print(i.name)
+    
+
+    def order(self, ext: bool = False):
+        cash = Wallet(0)
+        order = {}
+        for i in self.list:
+            for k,v in i.order.items():
+                if k in order:
+                    order[k] += v
+                else:
+                    order[k] = v
+            if ext:
+                print(i)
+            print(f"{i.name} change is {i.change}")
+            cash += i
+        print("Full order:")
+        for n, m in order.items():
+            print(f"           {m} of {n}")
 
 
 def inter(inp):
@@ -243,3 +334,25 @@ def inter(inp):
         quit()
     except:
         return inp
+
+
+def getter(msg:str, set_stat:bool = False, bool_cond = None, set_msg: str | None = None):
+    """
+    made mainly to get the no wanted to choose mode, also will
+    be used in the normal Fare mode since price will be set
+    once and this will save a lot of time later 
+    """
+    while True:
+        try:
+            x = int(input(msg))
+        except KeyboardInterrupt:
+            quit()
+        except:
+            continue
+        if set_stat:
+            if bool_cond(x):
+                if set_msg:
+                    print(set_msg)
+            else:
+                continue
+        return x

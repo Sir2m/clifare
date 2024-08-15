@@ -148,17 +148,30 @@ def testing_add_order(monkeypatch):
     assert z.order['Fish'] == 10
 
 
-def test_get_price(monkeypatch):
+def test_payers():
+    ...
+
+
+def test_getter(monkeypatch):
     """
     testing the get_price function
     """
-    inputs = iter(['m', None, '', -10, 5])
+    inputs = iter(["\n", None, "'5'", "10",
+                   'm', None, '', -10, 5])
     monkeypatch.setattr('builtins.input', lambda _: next(inputs))
 
     # main test
+    x = file.getter("mode: ")
+    assert x == 10
+
     # fare mode test
-    x = file.get_int_input(" ",
+    y = file.getter(" ",
                           True,
                           lambda x: x > 0,
                           " ")
-    assert x == 5
+    assert y == 5
+
+
+def test_add_fp(monkeypatch):
+    """
+    """

@@ -38,7 +38,7 @@ def mFare(price: int | None = None):
         print("Welcome to the Multi-Price FARE mode")
     print("\n"+
           "choose the operation to work on")
-    people = Payers(Farer)
+    people = Payers()
     while True:
         print("\n" +
               "Choose operation\n" +
@@ -57,8 +57,7 @@ def mFare(price: int | None = None):
                 print(f"\n{tot_cash}")
                 people.change()
             case 4:
-                print("\nSee you later!\nBye Bye!")
-                quit()
+                quiter()
 
 
 def add_fp(price: int | None = None):
@@ -72,7 +71,7 @@ def add_fp(price: int | None = None):
     x = Farer(name, pay, price, quantity)
     print('\nPayer created successfully!')
     while True:
-        print(f"\npayer {x.name}\n\n" +
+        print(f"\nPayer {x.name}\n\n" +
               "further operations\n" +
               "1- Change name\n" +
               "2- Change pay\n" +
@@ -103,29 +102,103 @@ def add_fp(price: int | None = None):
 
 def Menu():
     print("Welcome to the Menu mode")
-
-
-def getter(msg:str, set_stat:bool = False, bool_cond = None, set_msg: str | None = None):
-    """
-    made mainly to get the no wanted to choose mode, also will
-    be used in the normal Fare mode since price will be set
-    once and this will save a lot of time later 
-    """
+    print("\n"+
+          "choose the operation to work on")
+    people = Payers()
     while True:
-        try:
-            x = int(input(msg))
-        except KeyboardInterrupt:
-            quit()
-        except:
-            continue
-        if set_stat:
-            if bool_cond(x):
-                if set_msg:
-                    print(set_msg)
-            else:
-                continue
-        return x
+        print("\n" +
+              "Choose operation\n" +
+              "1- Add customer\n" +
+              "2- Show People\n" +
+              "3- Add to Menu\n" +
+              "4- Show Menu\n" +
+              "5- Change Menu price\n" +
+              "6- Add tax\n" +
+              "7- Show full order\n" +
+              "8- Show extended order\n"
+              "9- Quit\n")
+        mode = getter("operation: ", True,
+                      lambda x: x in [_ for _ in range(1, 10)])
+        match mode:
+            case 1:
+                people.add(add_mp())
+            case 2:
+                people.show()
+            case 3:
+                print("Adding item\n")
+                Menue.add_item(input("Item: "))
+                print("\nItem added successfully")
+            case 4:
+                Menue.print_menu()
+            case 5:
+                Menue.edit_price()
+            case 6:
+                Menue.add_tax()
+            case 7:
+                people.order(False)
+            case 8:
+                people.order(True)
+            case 9:
+                quiter()
 
+
+def add_mp():
+    print("\nCreating a new customer ...\n")
+    name = input("Name: ")
+    print('...')
+    x = Menue(name)
+    print('\nCustomer created successfully!')
+    while True:
+        print(f"\nCustomer {x.name}\n\n" +
+              "further operations\n" +
+              "1- Add order\n" +
+              "2- Change name\n" +
+              "3- Calc order cost\n" +
+              "4- Pay!\n" +
+              "5- Show HIS change\n" +
+              "6- Show Order\n"
+              "7- Delete payer\n" +
+              "8- Save\n")
+        mode = getter("operation: ", True,
+                      lambda x: x in [_ for _ in range(1, 9)])
+        match mode:
+            case 1:
+                inpi = input("Order item: ")
+                inpii = inter(input("How much: "))
+                x.add_order(inpi, inpii)
+                print("\nOrder saved\n")
+            case 2:
+                x.name = input("New name: ")
+            case 3:
+                x.get_cost()
+                print(f"\nOrder cost: {x.cost}\n")
+            case 4:
+                x.to_pay()
+            case 5:
+                if x.change:
+                    print(f"\nChange: {x.change}\n")
+                else:
+                    print("Didn't pay yet")
+            case 6:
+                print(f"\n{x}")
+            case 7:
+                del x
+                return None
+            case 8:
+                try:
+                    if x.pay and (x.change > 0):
+                        return x
+                    else:
+                        print("\nYou seems didn't stat the pay, PAY FIRST!\n")
+                except KeyboardInterrupt:
+                    quit()
+                except:
+                    pass
+
+
+def quiter():
+    print("\nSee you later!\nBye Bye!")
+    quit()
 
 if __name__ == "__main__":
     main()
