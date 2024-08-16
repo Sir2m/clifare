@@ -1,6 +1,11 @@
 from objects import *
 
 def main():
+    """
+    the main function just print the hello and passes the user into
+    the chosen interface
+    """
+
     print("Hello and welcome to your favorite cli app\n\n" +
           "the app which will end all your nightmares in\n" +
           "collecting money and retuning the change back for each\n\n")
@@ -23,8 +28,12 @@ def main():
                 mode = 0
 
 
-
 def Fare():
+    """
+    not an interface by it self, but it sets the the part of the
+    interface that asks for the price
+    """
+    
     print("Welcome to the FARE mode\n")
     price = getter("Entre the price: ", 
                           True,
@@ -34,6 +43,11 @@ def Fare():
 
 
 def mFare(price: int | None = None):
+    """
+    the main interface for the fare and multi fare modes, it
+    interact with user in the infinite loop
+    """
+    
     if not price:
         print("Welcome to the Multi-Price FARE mode")
     print("\n"+
@@ -61,13 +75,21 @@ def mFare(price: int | None = None):
 
 
 def add_fp(price: int | None = None):
+    """
+    the inner user interface for creating a payer object, it is set
+    to work for both fare and multi fare modes
+    """
+    
     print("\nCreating a new payer ...\n")
     name = input("Name: ")
     pay = inter(input('Paid: '))
+    
     if not price:
         price = getter("Price: ", True, lambda x: x > 0)
+    
     quantity = inter(input('How much: '))
     print('...')
+    
     x = Farer(name, pay, price, quantity)
     print('\nPayer created successfully!')
     while True:
@@ -101,6 +123,8 @@ def add_fp(price: int | None = None):
 
 
 def Menu():
+    """ the main user interface in Menu mode """
+    
     print("Welcome to the Menu mode")
     print("\n"+
           "choose the operation to work on")
@@ -143,9 +167,12 @@ def Menu():
 
 
 def add_mp():
+    """ the inner user interface for creating a customer """
+    
     print("\nCreating a new customer ...\n")
     name = input("Name: ")
     print('...')
+    
     x = Menue(name)
     print('\nCustomer created successfully!')
     while True:
@@ -193,12 +220,16 @@ def add_mp():
                 except KeyboardInterrupt:
                     quit()
                 except:
+                    print("\nYou seems didn't stat the pay, PAY FIRST!\n")
                     pass
 
 
 def quiter():
+    """ quits the program with the exit message """
+
     print("\nSee you later!\nBye Bye!")
     quit()
+
 
 if __name__ == "__main__":
     main()
